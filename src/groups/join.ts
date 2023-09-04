@@ -17,7 +17,7 @@ const plugins = require('../plugins');
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 const cache = require('../cache');
 
-module.exports = function (Groups) {
+export default function (Groups): void {
     Groups.join = async function (groupNames: string[], uid: number) {
         if (!groupNames) {
             throw new Error('[[error:invalid-data]]');
@@ -116,4 +116,4 @@ module.exports = function (Groups) {
 
         await user.setUserField(uid, 'groupTitle', JSON.stringify(groupNames));
     }
-};
+}
