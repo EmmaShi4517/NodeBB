@@ -1,21 +1,11 @@
 // 'use strict';
 
-// The next line calls a function in a module that has not been updated to TS yet
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const winston = require('winston');
+import winston from 'winston';
 
-// The next line calls a function in a module that has not been updated to TS yet
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const db = require('../database');
-// The next line calls a function in a module that has not been updated to TS yet
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const user = require('../user');
-// The next line calls a function in a module that has not been updated to TS yet
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const plugins = require('../plugins');
-// The next line calls a function in a module that has not been updated to TS yet
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const cache = require('../cache');
+import db from '../database';
+import user from '../user';
+import plugins from '../plugins';
+import cache from '../cache';
 
 export default function (Groups): void {
     Groups.join = async function (groupNames: string[], uid: number) {
@@ -100,7 +90,7 @@ export default function (Groups): void {
         }
     }
 
-    async function setGroupTitleIfNotSet(groupNames, uid) {
+    async function setGroupTitleIfNotSet(groupNames: string[], uid: number) {
         const ignore = ['registered-users', 'verified-users', 'unverified-users', Groups.BANNED_USERS];
         groupNames = groupNames.filter(
             groupName => !ignore.includes(groupName) && !Groups.isPrivilegeGroup(groupName)
