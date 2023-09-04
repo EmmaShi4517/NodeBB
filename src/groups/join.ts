@@ -18,7 +18,7 @@ const plugins = require('../plugins');
 const cache = require('../cache');
 
 module.exports = function (Groups) {
-    Groups.join = async function (groupNames, uid) {
+    Groups.join = async function (groupNames: string[], uid: number) {
         if (!groupNames) {
             throw new Error('[[error:invalid-data]]');
         }
