@@ -12,13 +12,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const winston_1 = __importDefault(require("winston"));
 const database_1 = __importDefault(require("../database"));
 const user_1 = __importDefault(require("../user"));
 const plugins_1 = __importDefault(require("../plugins"));
 const cache_1 = __importDefault(require("../cache"));
-function default_1(Groups) {
+module.exports = function (Groups) {
     function createNonExistingGroups(groupsToCreate) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!groupsToCreate.length) {
@@ -27,12 +26,21 @@ function default_1(Groups) {
             for (const groupName of groupsToCreate) {
                 try {
                     // eslint-disable-next-line no-await-in-loop
+                    // The next line calls a function in a module that has not been updated to TS yet
+                    // only disabling max-len for line to surpress eslint
+                    // eslint-disable-next-line max-len
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, no-await-in-loop
                     yield Groups.create({
                         name: groupName,
                         hidden: 1,
                     });
                 }
                 catch (err) {
+                    // I cannot assign a type to err
+                    // (Catch clause variable type annotation must be 'any' or 'unknown' if specified)
+                    // The next line calls a function in a module that has not been updated to TS yet
+                    // eslint-disable-next-line max-len
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                     if (err && err.message !== '[[error:group-already-exists]]') {
                         winston_1.default.error(`[groups.join] Could not create new hidden group (${groupName})\n${err.stack}`);
                         throw err;
@@ -91,7 +99,11 @@ function default_1(Groups) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 user_1.default.isAdministrator(uid),
             ]);
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             const groupsToCreate = groupNames.filter((groupName, index) => groupName && !exists[index]);
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             const groupsToJoin = groupNames.filter((groupName, index) => !isMembers[index]);
             if (!groupsToJoin.length) {
                 return;
@@ -122,7 +134,15 @@ function default_1(Groups) {
             if (visibleGroups.length) {
                 // The next line calls a function in a module that has not been updated to TS yet
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                yield database_1.default.sortedSetAdd('groups:visible:memberCount', visibleGroups.map(groupData => groupData.memberCount), visibleGroups.map(groupData => groupData.name));
+                yield database_1.default.sortedSetAdd('groups:visible:memberCount', 
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                visibleGroups.map(groupData => groupData.memberCount), 
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                visibleGroups.map(groupData => groupData.name));
             }
             yield setGroupTitleIfNotSet(groupsToJoin, uid).catch();
             plugins_1.default.hooks.fire('action:group.join', {
@@ -131,5 +151,4 @@ function default_1(Groups) {
             });
         });
     };
-}
-exports.default = default_1;
+};

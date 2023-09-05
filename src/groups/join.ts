@@ -7,7 +7,7 @@ import user from '../user';
 import plugins from '../plugins';
 import cache from '../cache';
 
-export default function (Groups): void {
+export = function (Groups): void {
     async function createNonExistingGroups(groupsToCreate: string[]) {
         if (!groupsToCreate.length) {
             return;
@@ -16,11 +16,20 @@ export default function (Groups): void {
         for (const groupName of groupsToCreate) {
             try {
                 // eslint-disable-next-line no-await-in-loop
+                // The next line calls a function in a module that has not been updated to TS yet
+                // only disabling max-len for line to surpress eslint
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, no-await-in-loop
                 await Groups.create({
                     name: groupName,
                     hidden: 1,
                 });
             } catch (err) {
+                // I cannot assign a type to err
+                // (Catch clause variable type annotation must be 'any' or 'unknown' if specified)
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 if (err && err.message !== '[[error:group-already-exists]]') {
                     winston.error(`[groups.join] Could not create new hidden group (${groupName})\n${err.stack}`);
                     throw err;
@@ -43,7 +52,7 @@ export default function (Groups): void {
 
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        const currentTitle = await db.getObjectField(`user:${uid}`, 'groupTitle');
+        const currentTitle: string = await db.getObjectField(`user:${uid}`, 'groupTitle');
         if (currentTitle || currentTitle === '') {
             return;
         }
@@ -80,7 +89,11 @@ export default function (Groups): void {
             user.isAdministrator(uid),
         ]);
 
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const groupsToCreate = groupNames.filter((groupName, index) => groupName && !exists[index]);
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const groupsToJoin = groupNames.filter((groupName, index) => !isMembers[index]);
 
         if (!groupsToJoin.length) {
@@ -118,7 +131,13 @@ export default function (Groups): void {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             await db.sortedSetAdd(
                 'groups:visible:memberCount',
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 visibleGroups.map(groupData => groupData.memberCount),
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 visibleGroups.map(groupData => groupData.name)
             );
         }
