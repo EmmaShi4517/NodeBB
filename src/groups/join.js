@@ -19,53 +19,6 @@ const user_1 = __importDefault(require("../user"));
 const plugins_1 = __importDefault(require("../plugins"));
 const cache_1 = __importDefault(require("../cache"));
 function default_1(Groups) {
-    Groups.join = function (groupNames, uid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!groupNames) {
-                throw new Error('[[error:invalid-data]]');
-            }
-            if (Array.isArray(groupNames) && !groupNames.length) {
-                return;
-            }
-            if (!Array.isArray(groupNames)) {
-                groupNames = [groupNames];
-            }
-            if (!uid) {
-                throw new Error('[[error:invalid-uid]]');
-            }
-            const [isMembers, exists, isAdmin] = yield Promise.all([
-                Groups.isMemberOfGroups(uid, groupNames),
-                Groups.exists(groupNames),
-                user_1.default.isAdministrator(uid),
-            ]);
-            const groupsToCreate = groupNames.filter((groupName, index) => groupName && !exists[index]);
-            const groupsToJoin = groupNames.filter((groupName, index) => !isMembers[index]);
-            if (!groupsToJoin.length) {
-                return;
-            }
-            yield createNonExistingGroups(groupsToCreate);
-            const promises = [
-                database_1.default.sortedSetsAdd(groupsToJoin.map(groupName => `group:${groupName}:members`), Date.now(), uid),
-                database_1.default.incrObjectField(groupsToJoin.map(groupName => `group:${groupName}`), 'memberCount'),
-            ];
-            if (isAdmin) {
-                promises.push(database_1.default.setsAdd(groupsToJoin.map(groupName => `group:${groupName}:owners`), uid));
-            }
-            yield Promise.all(promises);
-            Groups.clearCache(uid, groupsToJoin);
-            cache_1.default.del(groupsToJoin.map(name => `group:${name}:members`));
-            const groupData = yield Groups.getGroupsFields(groupsToJoin, ['name', 'hidden', 'memberCount']);
-            const visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);
-            if (visibleGroups.length) {
-                yield database_1.default.sortedSetAdd('groups:visible:memberCount', visibleGroups.map(groupData => groupData.memberCount), visibleGroups.map(groupData => groupData.name));
-            }
-            yield setGroupTitleIfNotSet(groupsToJoin, uid);
-            plugins_1.default.hooks.fire('action:group.join', {
-                groupNames: groupsToJoin,
-                uid: uid,
-            });
-        });
-    };
     function createNonExistingGroups(groupsToCreate) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!groupsToCreate.length) {
@@ -90,17 +43,93 @@ function default_1(Groups) {
     }
     function setGroupTitleIfNotSet(groupNames, uid) {
         return __awaiter(this, void 0, void 0, function* () {
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             const ignore = ['registered-users', 'verified-users', 'unverified-users', Groups.BANNED_USERS];
-            groupNames = groupNames.filter(groupName => !ignore.includes(groupName) && !Groups.isPrivilegeGroup(groupName));
+            groupNames = groupNames.filter(
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            groupName => !ignore.includes(groupName) && !Groups.isPrivilegeGroup(groupName));
             if (!groupNames.length) {
                 return;
             }
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             const currentTitle = yield database_1.default.getObjectField(`user:${uid}`, 'groupTitle');
             if (currentTitle || currentTitle === '') {
                 return;
             }
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             yield user_1.default.setUserField(uid, 'groupTitle', JSON.stringify(groupNames));
         });
     }
+    Groups.join = function (groupNames, uid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!groupNames) {
+                throw new Error('[[error:invalid-data]]');
+            }
+            if (Array.isArray(groupNames) && !groupNames.length) {
+                return;
+            }
+            if (!Array.isArray(groupNames)) {
+                groupNames = [groupNames];
+            }
+            if (!uid) {
+                throw new Error('[[error:invalid-uid]]');
+            }
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            const [isMembers, exists, isAdmin] = yield Promise.all([
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                Groups.isMemberOfGroups(uid, groupNames),
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                Groups.exists(groupNames),
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                user_1.default.isAdministrator(uid),
+            ]);
+            const groupsToCreate = groupNames.filter((groupName, index) => groupName && !exists[index]);
+            const groupsToJoin = groupNames.filter((groupName, index) => !isMembers[index]);
+            if (!groupsToJoin.length) {
+                return;
+            }
+            yield createNonExistingGroups(groupsToCreate);
+            const promises = [
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                database_1.default.sortedSetsAdd(groupsToJoin.map(groupName => `group:${groupName}:members`), Date.now(), uid),
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                database_1.default.incrObjectField(groupsToJoin.map(groupName => `group:${groupName}`), 'memberCount'),
+            ];
+            if (isAdmin) {
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                promises.push(database_1.default.setsAdd(groupsToJoin.map(groupName => `group:${groupName}:owners`), uid));
+            }
+            yield Promise.all(promises);
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            Groups.clearCache(uid, groupsToJoin);
+            cache_1.default.del(groupsToJoin.map(name => `group:${name}:members`));
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            const groupData = yield Groups.getGroupsFields(groupsToJoin, ['name', 'hidden', 'memberCount']);
+            const visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);
+            if (visibleGroups.length) {
+                // The next line calls a function in a module that has not been updated to TS yet
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                yield database_1.default.sortedSetAdd('groups:visible:memberCount', visibleGroups.map(groupData => groupData.memberCount), visibleGroups.map(groupData => groupData.name));
+            }
+            yield setGroupTitleIfNotSet(groupsToJoin, uid).catch();
+            plugins_1.default.hooks.fire('action:group.join', {
+                groupNames: groupsToJoin,
+                uid: uid,
+            });
+        });
+    };
 }
 exports.default = default_1;
