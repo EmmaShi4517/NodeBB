@@ -7,6 +7,7 @@ import user from '../user';
 import plugins from '../plugins';
 import cache from '../cache';
 
+// A type to infer the groupData objects used in here (originally specified elsewhere)
 type groupData = {
     name: string;
     slug: string;
@@ -22,6 +23,7 @@ type groupData = {
     disableLeave: number;
 };
 
+// Interface of the `Groups` Object for passing linter (no any values)
 interface Groups {
     create(data): Promise<groupData>;
     BANNED_USERS: string;
