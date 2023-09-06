@@ -27,7 +27,7 @@ module.exports = function (Groups) {
                 try {
                     // eslint-disable-next-line no-await-in-loop
                     // The next line calls a function in a module that has not been updated to TS yet
-                    // only disabling max-len for line to surpress eslint
+                    // only disabling max-len for line of surpressing eslint
                     // eslint-disable-next-line max-len
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, no-await-in-loop
                     yield Groups.create({
@@ -41,9 +41,11 @@ module.exports = function (Groups) {
                     // The next line calls a function in a module that has not been updated to TS yet
                     // eslint-disable-next-line max-len
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                    if (err && err.message !== '[[error:group-already-exists]]') {
-                        winston_1.default.error(`[groups.join] Could not create new hidden group (${groupName})\n${err.stack}`);
-                        throw err;
+                    if (err && (err instanceof Error)) {
+                        if (err.message !== '[[error:group-already-exists]]') {
+                            winston_1.default.error(`[groups.join] Could not create new hidden group (${groupName})\n${err.stack}`);
+                            throw err;
+                        }
                     }
                 }
             }
@@ -62,7 +64,8 @@ module.exports = function (Groups) {
                 return;
             }
             // The next line calls a function in a module that has not been updated to TS yet
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            // eslint-disable-next-line max-len
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
             const currentTitle = yield database_1.default.getObjectField(`user:${uid}`, 'groupTitle');
             if (currentTitle || currentTitle === '') {
                 return;
@@ -86,7 +89,8 @@ module.exports = function (Groups) {
             if (!uid) {
                 throw new Error('[[error:invalid-uid]]');
             }
-            // Need further investigation on types of these three
+            // suppressing the error because user is imported from another module with type that I cannot define
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
             const [isMembers, exists, isAdmin] = yield Promise.all([
                 // The next line calls a function in a module that has not been updated to TS yet
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -127,6 +131,7 @@ module.exports = function (Groups) {
             Groups.clearCache(uid, groupsToJoin);
             cache_1.default.del(groupsToJoin.map(name => `group:${name}:members`));
             // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             const groupData = yield Groups.getGroupsFields(groupsToJoin, ['name', 'hidden', 'memberCount']);
             const visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);
@@ -144,6 +149,7 @@ module.exports = function (Groups) {
                 visibleGroups.map(groupData => groupData.name));
             }
             yield setGroupTitleIfNotSet(groupsToJoin, uid).catch();
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             plugins_1.default.hooks.fire('action:group.join', {
                 groupNames: groupsToJoin,
                 uid: uid,
