@@ -7,8 +7,19 @@ import user from '../user';
 import plugins from '../plugins';
 import cache from '../cache';
 
+// interface Groups {
+//     create(data): void;
+//     BANNED_USERS: string;
+//     isPrivilegeGroup(groupName: string): boolean;
+//     join(groupNames: string[], uid: number): Promise;
+//     isMemberOfGroups(uid: number, groupNames: string[]);
+//     exists(groupNames: string[]);
+//     clearCache(uid: number, groupsToJoin: string[]);
+//     getGroupsFields(groupsToJoin: string[], fields: string[])
+// }
+
 export = function (Groups): void {
-    async function createNonExistingGroups(groupsToCreate: string[]) {
+    async function createNonExistingGroups(groupsToCreate: string[]): Promise<void> {
         if (!groupsToCreate.length) {
             return;
         }
@@ -25,7 +36,7 @@ export = function (Groups): void {
                     hidden: 1,
                 });
             } catch (err) {
-                // I cannot assign a type to err
+                // Unable assign a type to err
                 // (Catch clause variable type annotation must be 'any' or 'unknown' if specified)
                 // The next line calls a function in a module that has not been updated to TS yet
                 // eslint-disable-next-line max-len
@@ -37,7 +48,7 @@ export = function (Groups): void {
             }
         }
     }
-    async function setGroupTitleIfNotSet(groupNames: string[], uid: number) {
+    async function setGroupTitleIfNotSet(groupNames: string[], uid: number): Promise<void> {
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const ignore = ['registered-users', 'verified-users', 'unverified-users', Groups.BANNED_USERS];
@@ -61,7 +72,7 @@ export = function (Groups): void {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         await user.setUserField(uid, 'groupTitle', JSON.stringify(groupNames));
     }
-    Groups.join = async function (groupNames: string[], uid: number) {
+    Groups.join = async function (groupNames: string[], uid: number): Promise<void> {
         if (!groupNames) {
             throw new Error('[[error:invalid-data]]');
         }
@@ -75,8 +86,7 @@ export = function (Groups): void {
         if (!uid) {
             throw new Error('[[error:invalid-uid]]');
         }
-        // The next line calls a function in a module that has not been updated to TS yet
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        // Need further investigation on types of these three
         const [isMembers, exists, isAdmin] = await Promise.all([
             // The next line calls a function in a module that has not been updated to TS yet
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call

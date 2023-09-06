@@ -36,7 +36,7 @@ module.exports = function (Groups) {
                     });
                 }
                 catch (err) {
-                    // I cannot assign a type to err
+                    // Unable assign a type to err
                     // (Catch clause variable type annotation must be 'any' or 'unknown' if specified)
                     // The next line calls a function in a module that has not been updated to TS yet
                     // eslint-disable-next-line max-len
@@ -86,8 +86,7 @@ module.exports = function (Groups) {
             if (!uid) {
                 throw new Error('[[error:invalid-uid]]');
             }
-            // The next line calls a function in a module that has not been updated to TS yet
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            // Need further investigation on types of these three
             const [isMembers, exists, isAdmin] = yield Promise.all([
                 // The next line calls a function in a module that has not been updated to TS yet
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
